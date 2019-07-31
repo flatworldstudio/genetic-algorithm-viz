@@ -82,16 +82,12 @@ namespace Starfish
 
 
                         Score[a] = (int)(distance);
+
                         Log("score " + Score[a]);
-                        pop = ZeeSterEvolutie.Evolution(Score);
-
-
-
-
+                        
                     }
-
-
-
+                    
+                    pop = ZeeSterEvolutie.Evolution(Score);
 
 
                     done = true;
