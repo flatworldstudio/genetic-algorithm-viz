@@ -308,7 +308,14 @@ public class ZeeSterEvolutie
     {
 
         giveScore(score);
+
         bubbleSort();
+
+        for (int i = 10; i >0 ; i--) {
+            pop[i].setScore(i);
+            totalValue += i;
+        }
+
         assignChance();
 
 
@@ -354,7 +361,7 @@ public class ZeeSterEvolutie
         for (int i = 0; i < pop.Length; i++)
         {
             pop[i].setScore(score[i]);
-            totalValue += score[i];
+            //totalValue += score[i];
         }
     }
 
