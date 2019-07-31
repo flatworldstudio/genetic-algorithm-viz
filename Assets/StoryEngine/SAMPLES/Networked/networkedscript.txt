@@ -1,0 +1,45 @@
+﻿// Demo showing basic networking
+
+#serversample
+debugon
+start server
+start pingpong
+makeinterface
+interface
+end
+
+#clientsample
+debugon
+start client
+makeinterface
+interface
+end
+
+#startmenu
+startallsamples
+end
+
+// The storylines and tasks below are all handled by the datacontroller.
+
+#server
+startserver
+monitorconnections
+end
+
+#addclient
+pushglobaltasks
+end
+
+#client
+serversearch
+end
+
+#serverfound
+startclient
+monitorserver
+end
+
+#pingpong
+isglobal
+pingpong
+end

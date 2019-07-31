@@ -1,0 +1,25 @@
+﻿// Simple demo showing basic routing
+
+#starfish
+debugon
+makeinterface
+interface
+end
+
+#starfish2
+debugon
+startevolution
+start interface
+@loop
+spawn
+wait5
+evolve
+kill
+goto loop
+end
+
+#interface
+makeinterface
+interface
+end
+
