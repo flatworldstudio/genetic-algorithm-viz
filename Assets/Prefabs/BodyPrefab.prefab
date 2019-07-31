@@ -129,4 +129,8 @@ MonoBehaviour:
   Freq: 1
   Amp: 25
   Phase: 0.05
+  Hue: 0
+  Sat: 0
+  Val: 0
+  mat: {fileID: 0}
   Value: 0
