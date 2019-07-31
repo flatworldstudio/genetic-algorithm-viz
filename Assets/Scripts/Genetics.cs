@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class Zeester
 {
-
     public int NumberOfLegs, LegLength, Amp, Freq, Phase, score, Hue, Sat, Val;
     private double chnc;
 
