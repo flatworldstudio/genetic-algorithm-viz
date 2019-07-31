@@ -139,7 +139,7 @@ namespace Starfish
                         ster.GameObject = body;
 
                         body.transform.SetParent(Root.transform, false);
-                        body.transform.localPosition = new Vector3(0, 0, Random.Range(0f, 4f));
+                        body.transform.localPosition = new Vector3(0, 0, Random.Range(0f, 0.4f));
                         Agent agt = body.GetComponent<Agent>();
                         agt.Legs = new GameObject[NumberOfLegs];
 
