@@ -5,6 +5,7 @@ using Random = UnityEngine.Random;
 public class FamilyTreeDirector : MonoBehaviour
 {
     public GameObject BodyPrefab, LegPrefab, FamilyTreeCamera;
+    public float panSpeed = 2.0f;
 
 //    public GameObject
     private void Awake()
@@ -13,7 +14,11 @@ public class FamilyTreeDirector : MonoBehaviour
 
     private void Update()
     {
-
+        if (FamilyTreeCamera.activeSelf)
+        {
+            var pos = FamilyTreeCamera.transform.localPosition;
+            FamilyTreeCamera.transform.localPosition = new Vector3(pos.x, pos.y, pos.z + Time.deltaTime * panSpeed);
+        }
     }
 
     public void ShowFamilyTree(ZeeSterEvolutie evolutie)
@@ -47,7 +52,7 @@ public class FamilyTreeDirector : MonoBehaviour
                 ster.GameObject = body;
 
                 body.transform.SetParent(transform, false);
-                body.transform.localPosition = new Vector3(Random.Range(-10f, 10f), 0.1f, Random.Range(-5f, 5f) + i * 35);
+                body.transform.localPosition = new Vector3(Random.Range(-5f, 5f), 0.1f, Random.Range(-5f, 5f) + i * 20);
                 Agent agt = body.GetComponent<Agent>();
                 agt.Legs = new GameObject[NumberOfLegs];
 
