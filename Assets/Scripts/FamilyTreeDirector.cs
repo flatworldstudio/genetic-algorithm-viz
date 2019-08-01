@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class FamilyTreeDirector : MonoBehaviour
@@ -101,10 +102,7 @@ public class FamilyTreeDirector : MonoBehaviour
 
     public void ResetHideAndResetFamilyTree()
     {
-        finished = true;
-        var pos = FamilyTreeCamera.transform.localPosition;
-        FamilyTreeCamera.SetActive(false);
-        FamilyTreeCamera.transform.localPosition = new Vector3(pos.x, pos.y, 0);
-    //    GenTitles.SetActive(false);
+        Scene scene = SceneManager.GetActiveScene();
+        SceneManager.LoadScene(scene.name);
     }
 }
