@@ -15,6 +15,8 @@ namespace Starfish
         public GameObject Root;
         int AgentCount = 10;
 
+
+
         public GameObject BodyPrefab, LegPrefab;
         public Text Title, Subtitle, Generation,Genes;
 
@@ -80,11 +82,13 @@ namespace Starfish
                     }
                     else
                     {
+
                         Generation.gameObject.SetActive(true);
                         Title.gameObject.SetActive(true);
 
                         Generation.text = "GENERATION " + Round;
                         task.SetFloatValue("wait", Time.time + 1.5f);
+
                     }
                     break;
 
@@ -128,6 +132,27 @@ namespace Starfish
 
                     done = true;
                     break;
+                
+                case "reset":
+
+                    if (Round > 20)
+                    {
+                        ZeeSterEvolutie = new ZeeSterEvolutie();
+                        pop = ZeeSterEvolutie.GetPop();
+                        Genes.text = "";
+                        for (int a = 0; a < pop.Length; a++)
+                        {
+
+                            Genes.text += pop[a].getGeneAsString() + "\n";
+
+                        }
+
+                        Round = 1;
+                    }
+
+                    done = true;
+                    break; 
+                    
 
                 case "evolve":
 

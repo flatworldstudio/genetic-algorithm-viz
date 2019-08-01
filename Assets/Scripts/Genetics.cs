@@ -403,7 +403,7 @@ public class ZeeSterEvolutie
 
         child = crossover(p1.getGene(), p2.getGene());
 
-        if (Random.value > 0.5f)
+        if (Random.value > 0.8f)
             child = mutation(child.getGene());
 
         return child;
@@ -431,8 +431,11 @@ public class ZeeSterEvolutie
     // Point mutation
     public Zeester mutation(bool[] gene)
     {
-        int point = Random.Range(0,gene.Length);
-        gene[point] = !gene[point];
+        int amount = Random.Range(1,10);
+        for (int i = 0; i< amount; i++){
+            int point = Random.Range(0,gene.Length);
+            gene[point] = !gene[point];
+        }
         return new Zeester(gene);
     }
 
