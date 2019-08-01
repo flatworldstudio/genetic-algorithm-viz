@@ -47,7 +47,7 @@ public class FamilyTreeDirector : MonoBehaviour
                 ster.GameObject = body;
 
                 body.transform.SetParent(transform, false);
-                body.transform.localPosition = new Vector3(Random.Range(-5f, 5f), Random.Range(-5f, 5f), Random.Range(0f, 0.1f));
+                body.transform.localPosition = new Vector3(Random.Range(-10f, 10f), 0.1f, Random.Range(-5f, 5f) + i * 35);
                 Agent agt = body.GetComponent<Agent>();
                 agt.Legs = new GameObject[NumberOfLegs];
 

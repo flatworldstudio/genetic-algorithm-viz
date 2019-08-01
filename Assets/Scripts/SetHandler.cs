@@ -138,7 +138,7 @@ namespace Starfish
                 
                 case "reset":
 
-                    if (Round > 2)
+                    if (Round > 4)
                     {
                         // Show family tree
                         familyTreeDirector.ShowFamilyTree(ZeeSterEvolutie);
