@@ -2,6 +2,8 @@
 using UnityEngine;
 using StoryEngine;
 using StoryEngine.UI;
+using UnityEngine.UI;
+
 //using StoryEngine.UI;   
 
 namespace Starfish
@@ -14,6 +16,7 @@ namespace Starfish
         int AgentCount = 10;
 
         public GameObject BodyPrefab, LegPrefab;
+        public Text Title, Subtitle, Generation,Genes;
 
         public Canvas UserCanvas;
         Controller Controller;
@@ -22,9 +25,13 @@ namespace Starfish
         InterFace MainInterface, UpperInterface, LowerInterface;
         Zeester[] pop;
 
+
+        int Round = 1;
+
         ZeeSterEvolutie ZeeSterEvolutie;
         public SetController setController;
         readonly string ID = "SetHandler: ";
+
 
         // Copy these into every class for easy debugging. This way we don't have to pass an ID. Stack-based ID doesn't work across platforms.
         void Log(string message) => StoryEngine.Log.Message(message, ID);
@@ -55,10 +62,69 @@ namespace Starfish
 
             switch (task.Instruction)
             {
+
+                case "generationtitle":
+
+
+                    if (task.GetFloatValue("wait", out wait))
+                    {
+                       
+                        done |= Time.time > wait;
+                        if (Time.time > wait)
+                        {
+                            Generation.gameObject.SetActive(false);
+                            Title.gameObject.SetActive(false);
+                            done = true;
+                        }
+
+                    }
+                    else
+                    {
+                        Generation.gameObject.SetActive(true);
+                        Title.gameObject.SetActive(true);
+
+                        Generation.text = "GENERATION " + Round;
+                        task.SetFloatValue("wait", Time.time + 1.5f);
+                    }
+                    break;
+
+                case "genetitle":
+
+
+                    if (task.GetFloatValue("wait", out wait))
+                    {
+
+                        done |= Time.time > wait;
+                        if (Time.time > wait)
+                        {
+                            Genes.gameObject.SetActive(false);
+                            done = true;
+                        }
+
+                    }
+                    else
+                    {
+                        Genes.gameObject.SetActive(true);
+
+                      
+                        task.SetFloatValue("wait", Time.time + 1.5f);
+                    }
+                    break;
+
                 case "startevolution":
 
                     ZeeSterEvolutie = new ZeeSterEvolutie();
                     pop = ZeeSterEvolutie.GetPop();
+                    Genes.text = "";
+                    for (int a = 0; a < pop.Length; a++)
+                    {
+
+                        Genes.text += pop[a].getGeneAsString() + "\n";
+
+                    }
+
+                      
+
 
                     done = true;
                     break;
@@ -88,7 +154,7 @@ namespace Starfish
                     }
                     
                     pop = ZeeSterEvolutie.Evolution(Score);
-
+                    Round++;
 
                     done = true;
                     break;
@@ -97,6 +163,7 @@ namespace Starfish
 
                     //int AgentCount = 10;
 
+                    Genes.text = "";
 
                     for (int a = 0; a < AgentCount; a++)
                     {
@@ -115,25 +182,8 @@ namespace Starfish
 
                         // Behaviour input
                         float Freq = (1f / 7f * ster.Freq) * 4f;
-                        float Amp = 5f + 5f * ster.Amp;//0-7
+                        float Amp = 5f + 7f * ster.Amp;//0-7
                         float Phase = 1f / 7f * ster.Phase;
-
-
-                        /*
-                        int NumberOfLegs = Random.Range(1, 8);
-                        int LegLength = Random.Range(1, 8);
-                        float Hue = Random.Range(0f, 1f);
-                        float Sat = Random.Range(0f, 1f);
-                        float Val = Random.Range(0f, 1f);
-
-                        // Behaviour input
-                        float Freq = Random.Range(0f, 4f);
-                        float Amp = Random.Range(5f, 45f);
-                        float Phase = Random.Range(0f, 1f);
-                        */
-                        // Spawn
-
-                        //    Log("h: " + Hue);
 
                         GameObject body = Instantiate(BodyPrefab);
                         ster.GameObject = body;
@@ -161,18 +211,18 @@ namespace Starfish
                             agt.Legs[l] = Leg;
 
                             Leg.GetComponentInChildren<Renderer>().material = newMaterial;
-
-
+                            
                         }
 
                         agt.Freq = Freq;
                         agt.Amp = Amp;
                         agt.Phase = Phase;
 
-
-
+                     Log("dna: "+   ster.getGeneAsString());
+                        Genes.text += ster.getGeneAsString() + "\n";
                     }
 
+                    
 
 
 
@@ -286,6 +336,14 @@ namespace Starfish
                         task.SetFloatValue("wait", Time.time + 3f);
                         Log("Executing task " + task.Instruction);
                     }
+                    break;
+
+                case "wait1":
+
+                    if (task.GetFloatValue("wait", out wait))
+                        done |= Time.time > wait;
+                    else
+                        task.SetFloatValue("wait", Time.time + 1f);
                     break;
 
                 case "wait5":

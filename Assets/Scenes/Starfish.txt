@@ -11,6 +11,9 @@ debugon
 startevolution
 start interface
 @loop
+generationtitle
+genetitle
+wait1
 spawn
 wait5
 evolve

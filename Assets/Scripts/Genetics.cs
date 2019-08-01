@@ -169,6 +169,18 @@ public class Zeester
         return gene;
     }
 
+    public string getGeneAsString()
+    {
+
+        string geneString = "";
+        for (int g = 0; g < GENELENGHT; g++)
+        {
+            geneString += gene[g] ? "1" : "0";
+        }
+        return geneString;
+
+    }
+
     public double getChance()
     {
         return chnc;
@@ -254,46 +266,6 @@ public class ZeeSterEvolutie
 
 
 
-     //   giveScore(battle());
-     ////   int gaDoor = 0;
-
-
-     //   for (int i = 0; i < 20; i++)
-     //   {
-
-     //       bubbleSort();
-     //       assignChance();
-
-
-     //       //  Zeester[] ster;
-
-     //       List<Zeester> temp = new List<Zeester>();
-
-
-     //       while (temp.Count < pop.Length)
-     //       {
-     //           temp.Add(mate(makeParent(), makeParent()));
-     //       }
-
-     //       //Empty pop
-     //       pop = new Zeester[POPULATION];
-
-     //       for (int j = 0; j < POPULATION; j++)
-     //       {
-     //           pop[j] = new Zeester(temp[j].getGene());
-     //       }
-
-     //       totalValue = 0;
-           
-
-
-
-     //   }
-
-        //for (int i = 0; i < POPULATION; i++)
-        //{
-        //    System.out.println(pop[i]);
-        //}
 
 
     }
@@ -306,15 +278,21 @@ public class ZeeSterEvolutie
 
     public Zeester[] Evolution (int[] score)
     {
-
+        totalValue = 0;
         giveScore(score);
 
         bubbleSort();
 
-        for (int i = 10; i >0 ; i--) {
-            pop[i].setScore(i);
-            totalValue += i;
+        if (false)
+        {
+            totalValue = 0;
+            for (int i = 9; i >= 0; i--)
+            {
+                pop[i].setScore(i);
+                totalValue += i;
+            }
         }
+
 
         assignChance();
 
@@ -337,7 +315,7 @@ public class ZeeSterEvolutie
             pop[j] = new Zeester(temp[j].getGene());
         }
 
-        totalValue = 0;
+        //totalValue = 0;
 
         return pop;
        
@@ -361,7 +339,7 @@ public class ZeeSterEvolutie
         for (int i = 0; i < pop.Length; i++)
         {
             pop[i].setScore(score[i]);
-            //totalValue += score[i];
+            totalValue += score[i];
         }
     }
 
