@@ -1,13 +1,13 @@
 ﻿// Simple demo showing basic routing
 
 #starfish
-debugon
+debugoff
 makeinterface
 interface
 end
 
 #starfish2
-debugon
+debugoff
 start interface
 startevolution
 @loop
