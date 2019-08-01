@@ -20,7 +20,7 @@ namespace Starfish
         public Text Title, Subtitle, Generation,Genes;
 
         public FamilyTreeDirector familyTreeDirector;
-
+        public GameObject GenTitle,GenTitles;
 
         public Canvas UserCanvas;
         Controller Controller;
@@ -30,6 +30,7 @@ namespace Starfish
         Zeester[] pop;
 
         int Round = 1;
+        private int maxRounds = 10;
 
 //        FamilyTree[] familyTree;
 
@@ -54,6 +55,16 @@ namespace Starfish
         void Start()
         {
             setController.addTaskHandler(TaskHandler);
+
+            /*for (int g = 0; g < maxRounds; g++)
+            {
+           GameObject   go=   GameObject.Instantiate(GenTitle);
+           go.transform.SetParent(GenTitles.transform);
+           go.transform.localPosition=new Vector3(50,0,g*familyTreeDirector.generationSpacing);
+           go.GetComponent<Text>().text = "GENERATION 0" + g;
+
+
+            }*/
 
         }
 
@@ -137,22 +148,15 @@ namespace Starfish
                     break;
                 
                 case "reset":
-
-                    if (Round > 4)
+                    if (Round > maxRounds)
                     {
-                        // Show family tree
-                        familyTreeDirector.ShowFamilyTree(ZeeSterEvolutie);
-
-
                         // Start again
                         ZeeSterEvolutie = new ZeeSterEvolutie();
                         pop = ZeeSterEvolutie.GetPop();
                         Genes.text = "";
                         for (int a = 0; a < pop.Length; a++)
                         {
-
                             Genes.text += pop[a].getGeneAsString() + "\n";
-
                         }
 
                         Round = 1;
@@ -162,8 +166,25 @@ namespace Starfish
                     break;
 
 
-                case "show family tree if reset":
-                    Debug.Log("Family");
+                case "showfamily":
+                    if (Round > maxRounds)
+                    {
+                        if (familyTreeDirector.finished)
+                        {
+                            done = true;
+                        }
+                        else
+                        {
+                            if (!familyTreeDirector.started)
+                            {
+                                familyTreeDirector.ShowFamilyTree(ZeeSterEvolutie);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        done = true;
+                    }
                     break;
 
                 case "evolve":

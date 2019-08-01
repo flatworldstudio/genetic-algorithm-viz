@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,6 @@ public class RotateCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Rotate(0.0f, (float) (Time.deltaTime * speed), 0.0f);
+        transform.localRotation = Quaternion.Euler(15f + (float) (Mathf.Sin(Time.time) * 1.25f), (float) (Time.deltaTime * speed) + transform.localEulerAngles.y, 0.0f);
     }
 }

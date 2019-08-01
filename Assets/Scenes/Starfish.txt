@@ -15,11 +15,11 @@ generationtitle
 genetitle
 wait1
 spawn
-wait5
+wait10
 evolve
 kill
+showfamily
 reset
-show family tree if reset
 goto loop
 end
 

@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -6,31 +5,41 @@ public class FamilyTreeDirector : MonoBehaviour
 {
     public GameObject BodyPrefab, LegPrefab, FamilyTreeCamera;
     public float panSpeed = 2.0f;
-
-//    public GameObject
-    private void Awake()
-    {
-    }
-
+    public float generationSpacing = 20;
+    public bool finished;
+    public bool started = false;
+    private ZeeSterEvolutie evolutie;
+    public GameObject GenTitles;
     private void Update()
     {
         if (FamilyTreeCamera.activeSelf)
         {
             var pos = FamilyTreeCamera.transform.localPosition;
             FamilyTreeCamera.transform.localPosition = new Vector3(pos.x, pos.y, pos.z + Time.deltaTime * panSpeed);
+
+            Debug.Log(transform.position.z);
+            Debug.Log(evolutie.generations.Count * generationSpacing + 5);
+            if (FamilyTreeCamera.transform.position.z > evolutie.generations.Count * 20)
+            {
+                ResetHideAndResetFamilyTree();
+            }
         }
     }
 
     public void ShowFamilyTree(ZeeSterEvolutie evolutie)
     {
+        this.evolutie = evolutie;
+        finished = false;
+        started = true;
         FamilyTreeCamera.SetActive(true);
+    //    GenTitles.SetActive(true);
 
         /**
          * For each generation...
          */
-        for (int i = 0; i < evolutie.familyTree.Count; i++)
+        for (int i = 0; i < evolutie.generations.Count; i++)
         {
-            var generation = evolutie.familyTree[i];
+            var generation = evolutie.generations[i];
 
             /**
              * Instantiate each zeester in that generation's group
@@ -43,16 +52,21 @@ public class FamilyTreeDirector : MonoBehaviour
                 float Sat = 1f / 7f * ster.Sat;
                 float Val = 1f / 7f * ster.Val;
 
-                // Behaviour input
-                float Freq = (1f / 7f * ster.Freq) * 4f;
-                float Amp = 5f + 7f * ster.Amp;//0-7
-                float Phase = 1f / 7f * ster.Phase;
-
                 GameObject body = Instantiate(BodyPrefab);
                 ster.GameObject = body;
 
                 body.transform.SetParent(transform, false);
-                body.transform.localPosition = new Vector3(Random.Range(-5f, 5f), 0.1f, Random.Range(-5f, 5f) + i * 20);
+
+                /**
+                 * Spawn in groups of generations with some random offset
+                 */
+                body.transform.localPosition = new Vector3(Random.Range(-7f, 7f), 0.1f, Random.Range(-1f, 1f) + i * generationSpacing);
+
+                /**
+                 * Title
+                 */
+
+
                 Agent agt = body.GetComponent<Agent>();
                 agt.Legs = new GameObject[NumberOfLegs];
 
@@ -74,26 +88,23 @@ public class FamilyTreeDirector : MonoBehaviour
                     agt.Legs[l] = Leg;
 
                     Leg.GetComponentInChildren<Renderer>().material = newMaterial;
-
                 }
 
                 agt.Freq = 0;
                 agt.Amp = 0;
                 agt.Phase = 0;
 
-             Debug.Log("dna: "+   ster.getGeneAsString());
-//             Genes.text += ster.getGeneAsString() + "\n";
-    }
-}
-}
-
-public void IsDone()
-{
-
+                Debug.Log("dna: " + ster.getGeneAsString());
+            }
+        }
     }
 
-    public void HideFamilyTree()
+    public void ResetHideAndResetFamilyTree()
     {
-
+        finished = true;
+        var pos = FamilyTreeCamera.transform.localPosition;
+        FamilyTreeCamera.SetActive(false);
+        FamilyTreeCamera.transform.localPosition = new Vector3(pos.x, pos.y, 0);
+    //    GenTitles.SetActive(false);
     }
 }

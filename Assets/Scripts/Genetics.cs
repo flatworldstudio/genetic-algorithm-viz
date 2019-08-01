@@ -14,7 +14,7 @@ public class ZeeSterEvolutie
      * Current and previous generations
      */
     private Zeester[] pop;
-    public List<Generation> familyTree = new List<Generation>();
+    public List<Generation> generations = new List<Generation>();
 
 
 
@@ -59,7 +59,7 @@ public class ZeeSterEvolutie
 
         // Save!
         var newGeneration = new Generation(pop, highestScoringZeester, score);
-        familyTree.Add(newGeneration);
+        generations.Add(newGeneration);
     }
 
     public Zeester[] Evolution (int[] score)
