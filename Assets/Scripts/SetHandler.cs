@@ -16,9 +16,11 @@ namespace Starfish
         int AgentCount = 10;
 
 
-
         public GameObject BodyPrefab, LegPrefab;
         public Text Title, Subtitle, Generation,Genes;
+
+        public FamilyTreeDirector familyTreeDirector;
+
 
         public Canvas UserCanvas;
         Controller Controller;
@@ -27,8 +29,9 @@ namespace Starfish
         InterFace MainInterface, UpperInterface, LowerInterface;
         Zeester[] pop;
 
-
         int Round = 1;
+
+//        FamilyTree[] familyTree;
 
         ZeeSterEvolutie ZeeSterEvolutie;
         public SetController setController;
@@ -135,8 +138,13 @@ namespace Starfish
                 
                 case "reset":
 
-                    if (Round > 20)
+                    if (Round > 2)
                     {
+                        // Show family tree
+                        familyTreeDirector.ShowFamilyTree(ZeeSterEvolutie);
+
+
+                        // Start again
                         ZeeSterEvolutie = new ZeeSterEvolutie();
                         pop = ZeeSterEvolutie.GetPop();
                         Genes.text = "";
@@ -151,8 +159,12 @@ namespace Starfish
                     }
 
                     done = true;
-                    break; 
-                    
+                    break;
+
+
+                case "show family tree if reset":
+                    Debug.Log("Family");
+                    break;
 
                 case "evolve":
 
@@ -266,6 +278,10 @@ namespace Starfish
 
 
                     done = true;
+                    break;
+
+
+                case "showfamilytree":
                     break;
 
                 case "makeinterface":

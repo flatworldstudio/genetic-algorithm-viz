@@ -19,6 +19,7 @@ wait5
 evolve
 kill
 reset
+show family tree if reset
 goto loop
 end
 
