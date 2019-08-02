@@ -20,7 +20,7 @@ namespace Starfish
 
 
         public GameObject BodyPrefab, LegPrefab;
-        public Text Title, Subtitle, Generation,Genes;
+        public Text Title, Subtitle, Generation, Genes;
 
         public FamilyTreeDirector familyTreeDirector;
         public GameObject GenTitle,GenTitles;
@@ -43,13 +43,18 @@ namespace Starfish
             Generation.gameObject.SetActive(true);
             Title.gameObject.SetActive(true);
             Generation.text = "GENERATION " + FsmVariables.GlobalVariables.GetFsmInt("round").Value;
-            Genes.gameObject.SetActive(true);
         }
 
-        void HideTitle()
+        void HideGenerationShowGenes()
         {
+            Genes.gameObject.SetActive(true);
             Generation.gameObject.SetActive(false);
             Title.gameObject.SetActive(false);
+        }
+
+        void HideGenes()
+        {
+
             Genes.gameObject.SetActive(false);
         }
 
@@ -172,39 +177,39 @@ namespace Starfish
         void MakeInterface()
         {
 
-                // Create a controller
-                Controller = new Controller();
-
-                // Create a layout (can hold multiple planes and interfaces)
-                MainLayout = new Layout();
+//                // Create a controller
+//                Controller = new Controller();
+//
+//                // Create a layout (can hold multiple planes and interfaces)
+//                MainLayout = new Layout();
 
                 // Create a plane
                 //Plane UpperPlane3d = new Plane(GameObject.Find("UpperPlane"));
                 //Plane LowerPlane3d = new Plane(GameObject.Find("LowerPlane"));
 
                 // Create an interface
-                UpperInterface = new InterFace(UserCanvas.gameObject, "upper");
+//                UpperInterface = new InterFace(UserCanvas.gameObject, "upper");
                 //LowerInterface = new InterFace(UserCanvas.gameObject, "lower");
 
                 // Create a mapping and add it to the interface
-                MainMapping = new Mapping();
-                MainMapping.ux_single_none += Methods.OrbitCamera;
-                MainMapping.ux_double_none += Methods.LateralCamera;
-                MainMapping.ux_double_none += Methods.LongitudinalCamera;
-                MainMapping.ux_single_2d += Methods.Drag2D;
-                MainMapping.ux_tap_2d += Methods.tapButton2D;
+//                MainMapping = new Mapping();
+//                MainMapping.ux_single_none += Methods.OrbitCamera;
+//                MainMapping.ux_double_none += Methods.LateralCamera;
+//                MainMapping.ux_double_none += Methods.LongitudinalCamera;
+//                MainMapping.ux_single_2d += Methods.Drag2D;
+//                MainMapping.ux_tap_2d += Methods.tapButton2D;
 
                 // Create an orbit cam with a pitch constraint.
-                Constraint orbitConstraint = new Constraint()
-                {
-                    pitchClamp = true,
-                    pitchClampMin = 15f,
-                    pitchClampMax = 85f
-
-                };
-
-                UiCam3D uppercam = new UiCam3D(GameObject.Find("MainCamera"));
-                uppercam.AddContraint(orbitConstraint);
+//                Constraint orbitConstraint = new Constraint()
+//                {
+//                    pitchClamp = true,
+//                    pitchClampMin = 15f,
+//                    pitchClampMax = 85f
+//
+//                };
+//
+//                UiCam3D uppercam = new UiCam3D(GameObject.Find("MainCamera"));
+//                uppercam.AddContraint(orbitConstraint);
 
                 //UiCam3D lowercam = new UiCam3D(GameObject.Find("CameraLower"));
                 //lowercam.AddContraint(orbitConstraint);
@@ -216,18 +221,18 @@ namespace Starfish
                 //UpperInterface.addButton(button);
 
                 // Add together.
-
-                UpperInterface.AddUiCam3D(uppercam);
-                //LowerInterface.AddUiCam3D(lowercam);
-
-                UpperInterface.AddMapping(MainMapping);
-                //LowerInterface.AddMapping(MainMapping);
-
-                //UpperPlane3d.AddInterface(UpperInterface);
-                //LowerPlane3d.AddInterface(LowerInterface);
-
-                // Add to layout
-                MainLayout.AddInterface(UpperInterface);
+//
+//                UpperInterface.AddUiCam3D(uppercam);
+//                //LowerInterface.AddUiCam3D(lowercam);
+//
+//                UpperInterface.AddMapping(MainMapping);
+//                //LowerInterface.AddMapping(MainMapping);
+//
+//                //UpperPlane3d.AddInterface(UpperInterface);
+//                //LowerPlane3d.AddInterface(LowerInterface);
+//
+//                // Add to layout
+//                MainLayout.AddInterface(UpperInterface);
                 //MainLayout.AddPlane(UpperPlane3d);
                 //MainLayout.AddPlane(LowerPlane3d);
         }
@@ -240,15 +245,6 @@ namespace Starfish
             }
         }
 
-        void Interface()
-        {
-            // Update the interface(s) and get result.
-            UserCallBack result = Controller.updateUi(MainLayout);
-            if (result.trigger)
-            {
-                Director.Instance.NewStoryLine(result.label);
-            }
-        }
     }
 }
 

@@ -1,10 +1,5 @@
 ﻿// Simple demo showing basic routing
 
-#starfish
-debugoff
-makeinterface
-interface
-end
 
 #starfish2
 debugoff
@@ -22,9 +17,3 @@ showfamily
 reset
 goto loop
 end
-
-#interface
-makeinterface
-interface
-end
-
