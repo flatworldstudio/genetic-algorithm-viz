@@ -11,18 +11,18 @@ public class FamilyTreeDirector : MonoBehaviour
     public bool started = false;
     private ZeeSterEvolutie evolutie;
     public GameObject GenTitles;
+    public PlayMakerFSM fsm;
+    public Transform spawnPoint;
+
     private void Update()
     {
         if (FamilyTreeCamera.activeSelf)
         {
             var pos = FamilyTreeCamera.transform.localPosition;
             FamilyTreeCamera.transform.localPosition = new Vector3(pos.x, pos.y, pos.z + Time.deltaTime * panSpeed);
-
-            Debug.Log(transform.position.z);
-            Debug.Log(evolutie.generations.Count * generationSpacing + 5);
             if (FamilyTreeCamera.transform.position.z > evolutie.generations.Count * 20)
             {
-                ResetHideAndResetFamilyTree();
+                fsm.SendEvent("at the end of the tree");
             }
         }
     }
@@ -56,7 +56,7 @@ public class FamilyTreeDirector : MonoBehaviour
                 GameObject body = Instantiate(BodyPrefab);
                 ster.GameObject = body;
 
-                body.transform.SetParent(transform, false);
+                body.transform.SetParent(spawnPoint, false);
 
                 /**
                  * Spawn in groups of generations with some random offset
@@ -102,7 +102,13 @@ public class FamilyTreeDirector : MonoBehaviour
 
     public void ResetHideAndResetFamilyTree()
     {
-        Scene scene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene(scene.name);
+        finished = false;
+        started = false;
+        FamilyTreeCamera.SetActive(false);
+        FamilyTreeCamera.transform.localPosition = new Vector3(0, 12.04f, -10);
+        foreach (Transform child in spawnPoint.transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
 }

@@ -1,8 +1,11 @@
 ﻿
+using System;
+using HutongGames.PlayMaker;
 using UnityEngine;
 using StoryEngine;
 using StoryEngine.UI;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 //using StoryEngine.UI;   
 
@@ -29,197 +32,82 @@ namespace Starfish
         InterFace MainInterface, UpperInterface, LowerInterface;
         Zeester[] pop;
 
-        int Round = 1;
-        private int maxRounds = 10;
 
-//        FamilyTree[] familyTree;
+        public Fsm fsm;
+
 
         ZeeSterEvolutie ZeeSterEvolutie;
-        public SetController setController;
-        readonly string ID = "SetHandler: ";
 
-
-        // Copy these into every class for easy debugging. This way we don't have to pass an ID. Stack-based ID doesn't work across platforms.
-        void Log(string message) => StoryEngine.Log.Message(message, ID);
-        void Warning(string message) => StoryEngine.Log.Warning(message, ID);
-        void Error(string message) => StoryEngine.Log.Error(message, ID);
-        void Verbose(string message) => StoryEngine.Log.Message(message, ID, LOGLEVEL.VERBOSE);
-
-        void Awake()
+        void ShowTitle() // 1.5s
         {
+            Generation.gameObject.SetActive(true);
+            Title.gameObject.SetActive(true);
+            Generation.text = "GENERATION " + FsmVariables.GlobalVariables.GetFsmInt("round").Value;
+            Genes.gameObject.SetActive(true);
+        }
 
-
+        void HideTitle()
+        {
+            Generation.gameObject.SetActive(false);
+            Title.gameObject.SetActive(false);
+            Genes.gameObject.SetActive(false);
         }
 
 
-        void Start()
+        void StartEvolution()
         {
-            setController.addTaskHandler(TaskHandler);
-
-            /*for (int g = 0; g < maxRounds; g++)
+            ZeeSterEvolutie = new ZeeSterEvolutie();
+            pop = ZeeSterEvolutie.GetPop();
+            Genes.text = "";
+            for (int a = 0; a < pop.Length; a++)
             {
-           GameObject   go=   GameObject.Instantiate(GenTitle);
-           go.transform.SetParent(GenTitles.transform);
-           go.transform.localPosition=new Vector3(50,0,g*familyTreeDirector.generationSpacing);
-           go.GetComponent<Text>().text = "GENERATION 0" + g;
+                Genes.text += pop[a].getGeneAsString() + "\n";
+            }
+        }
 
-
-            }*/
+        void ShowFamilyTree()
+        {
+            familyTreeDirector.ShowFamilyTree(ZeeSterEvolutie);
 
         }
 
-
-        float wait;
-
-        public bool TaskHandler(StoryTask task)
+        void Reset()
         {
+            // Start again
+            ZeeSterEvolutie = new ZeeSterEvolutie();
+            pop = ZeeSterEvolutie.GetPop();
+            Genes.text = "";
+            for (int a = 0; a < pop.Length; a++)
+            {
+                Genes.text += pop[a].getGeneAsString() + "\n";
+            }
+            FsmVariables.GlobalVariables.GetFsmInt("round").Value = 1;
+        }
 
-            bool done = false;
+        void Evolve()
+        {
+            int[] Score = new int[AgentCount];
 
-            switch (task.Instruction)
+            for (int a = 0; a < AgentCount; a++)
             {
 
-                case "generationtitle":
+                GameObject go = pop[a].GameObject;
+                float distance=0;
+
+                if (go != null)
+                {
+                    distance = go.transform.position.magnitude;
+                }
+                Score[a] = (int)(distance);
+            }
+
+            pop = ZeeSterEvolutie.Evolution(Score);
+            FsmVariables.GlobalVariables.GetFsmInt("round").Value += 1;
+        }
 
 
-                    if (task.GetFloatValue("wait", out wait))
-                    {
-                       
-                        done |= Time.time > wait;
-                        if (Time.time > wait)
-                        {
-                            Generation.gameObject.SetActive(false);
-                            Title.gameObject.SetActive(false);
-                            done = true;
-                        }
-
-                    }
-                    else
-                    {
-
-                        Generation.gameObject.SetActive(true);
-                        Title.gameObject.SetActive(true);
-
-                        Generation.text = "GENERATION " + Round;
-                        task.SetFloatValue("wait", Time.time + 1.5f);
-
-                    }
-                    break;
-
-                case "genetitle":
-
-
-                    if (task.GetFloatValue("wait", out wait))
-                    {
-
-                        done |= Time.time > wait;
-                        if (Time.time > wait)
-                        {
-                            Genes.gameObject.SetActive(false);
-                            done = true;
-                        }
-
-                    }
-                    else
-                    {
-                        Genes.gameObject.SetActive(true);
-
-                      
-                        task.SetFloatValue("wait", Time.time + 1.5f);
-                    }
-                    break;
-
-                case "startevolution":
-
-                    ZeeSterEvolutie = new ZeeSterEvolutie();
-                    pop = ZeeSterEvolutie.GetPop();
-                    Genes.text = "";
-                    for (int a = 0; a < pop.Length; a++)
-                    {
-
-                        Genes.text += pop[a].getGeneAsString() + "\n";
-
-                    }
-
-                      
-
-
-                    done = true;
-                    break;
-                
-                case "reset":
-                    if (Round > maxRounds)
-                    {
-                        // Start again
-                        ZeeSterEvolutie = new ZeeSterEvolutie();
-                        pop = ZeeSterEvolutie.GetPop();
-                        Genes.text = "";
-                        for (int a = 0; a < pop.Length; a++)
-                        {
-                            Genes.text += pop[a].getGeneAsString() + "\n";
-                        }
-
-                        Round = 1;
-                    }
-
-                    done = true;
-                    break;
-
-
-                case "showfamily":
-                    if (Round > maxRounds)
-                    {
-                        if (familyTreeDirector.finished)
-                        {
-                            done = true;
-                        }
-                        else
-                        {
-                            if (!familyTreeDirector.started)
-                            {
-                                familyTreeDirector.ShowFamilyTree(ZeeSterEvolutie);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        done = true;
-                    }
-                    break;
-
-                case "evolve":
-
-
-                    int[] Score = new int[AgentCount];
-
-                    for (int a = 0; a < AgentCount; a++)
-                    {
-
-                        GameObject go = pop[a].GameObject;
-                        float distance=0;
-
-                        if (go != null)
-                        {
-                             distance = go.transform.position.magnitude;
-
-                        }
-
-
-                        Score[a] = (int)(distance);
-
-                        Log("score " + Score[a]);
-                        
-                    }
-                    
-                    pop = ZeeSterEvolutie.Evolution(Score);
-                    Round++;
-
-                    done = true;
-                    break;
-
-                case "spawn":
-
-                    //int AgentCount = 10;
+        void Spawn()
+        {
 
                     Genes.text = "";
 
@@ -269,175 +157,97 @@ namespace Starfish
                             agt.Legs[l] = Leg;
 
                             Leg.GetComponentInChildren<Renderer>().material = newMaterial;
-                            
+
                         }
 
                         agt.Freq = Freq;
                         agt.Amp = Amp;
                         agt.Phase = Phase;
 
-                     Log("dna: "+   ster.getGeneAsString());
+                     Debug.Log("dna: "+   ster.getGeneAsString());
                         Genes.text += ster.getGeneAsString() + "\n";
                     }
-
-                    
-
-
-
-                    done = true;
-
-                    break;
-
-
-                case "kill":
-
-
-                    foreach (Transform child in Root.transform)
-                    {
-                        Destroy(child.gameObject);
-                    }
-
-
-                    done = true;
-                    break;
-
-
-                case "showfamilytree":
-                    break;
-
-                case "makeinterface":
-
-                    // Create a controller
-                    Controller = new Controller();
-
-                    // Create a layout (can hold multiple planes and interfaces)
-                    MainLayout = new Layout();
-
-                    // Create a plane
-                    //Plane UpperPlane3d = new Plane(GameObject.Find("UpperPlane"));
-                    //Plane LowerPlane3d = new Plane(GameObject.Find("LowerPlane"));
-
-                    // Create an interface
-                    UpperInterface = new InterFace(UserCanvas.gameObject, "upper");
-                    //LowerInterface = new InterFace(UserCanvas.gameObject, "lower");
-
-                    // Create a mapping and add it to the interface
-                    MainMapping = new Mapping();
-                    MainMapping.ux_single_none += Methods.OrbitCamera;
-                    MainMapping.ux_double_none += Methods.LateralCamera;
-                    MainMapping.ux_double_none += Methods.LongitudinalCamera;
-                    MainMapping.ux_single_2d += Methods.Drag2D;
-                    MainMapping.ux_tap_2d += Methods.tapButton2D;
-
-                    // Create an orbit cam with a pitch constraint.
-                    Constraint orbitConstraint = new Constraint()
-                    {
-                        pitchClamp = true,
-                        pitchClampMin = 15f,
-                        pitchClampMax = 85f
-
-                    };
-
-                    UiCam3D uppercam = new UiCam3D(GameObject.Find("MainCamera"));
-                    uppercam.AddContraint(orbitConstraint);
-
-                    //UiCam3D lowercam = new UiCam3D(GameObject.Find("CameraLower"));
-                    //lowercam.AddContraint(orbitConstraint);
-
-                    // Create an exit button and add it to the interface
-                    //button = new Button("Exit");
-                    //button.AddConstraint(Constraint.LockInPlace(button));
-                    //button.AddCallback("startmenu");
-                    //UpperInterface.addButton(button);
-
-                    // Add together.
-
-                    UpperInterface.AddUiCam3D(uppercam);
-                    //LowerInterface.AddUiCam3D(lowercam);
-
-                    UpperInterface.AddMapping(MainMapping);
-                    //LowerInterface.AddMapping(MainMapping);
-
-                    //UpperPlane3d.AddInterface(UpperInterface);
-                    //LowerPlane3d.AddInterface(LowerInterface);
-
-                    // Add to layout
-                    MainLayout.AddInterface(UpperInterface);
-                    //MainLayout.AddPlane(UpperPlane3d);
-                    //MainLayout.AddPlane(LowerPlane3d);
-
-                    done = true;
-
-                    break;
-
-                case "interface":
-
-                    // Update the interface(s) and get result.
-
-                    UserCallBack result = Controller.updateUi(MainLayout);
-
-                    if (result.trigger)
-                    {
-                        Log("User tapped " + result.sender + ", starting storyline " + result.label);
-                        Director.Instance.NewStoryLine(result.label);
-                    }
-
-                    break;
-
-
-
-                case "task1":
-                case "task2":
-                case "task3":
-                case "repeatingtask":
-
-                    if (task.GetFloatValue("wait", out wait))
-                        done |= Time.time > wait;
-                    else
-                    {
-                        task.SetFloatValue("wait", Time.time + 3f);
-                        Log("Executing task " + task.Instruction);
-                    }
-                    break;
-
-                case "wait1":
-
-                    if (task.GetFloatValue("wait", out wait))
-                        done |= Time.time > wait;
-                    else
-                        task.SetFloatValue("wait", Time.time + 1f);
-                    break;
-
-                case "wait5":
-
-                    if (task.GetFloatValue("wait", out wait))
-                        done |= Time.time > wait;
-                    else
-                        task.SetFloatValue("wait", Time.time + 5f);
-                    break;
-
-
-                case "wait10":
-
-                    if (task.GetFloatValue("wait", out wait))
-                        done |= Time.time > wait;
-                    else
-                        task.SetFloatValue("wait", Time.time + 10f);
-                    break;
-
-                default:
-                    done = true;
-
-                    break;
-            }
-
-            return done;
-
         }
 
-        void Update()
+        void MakeInterface()
         {
-            // 
+
+                // Create a controller
+                Controller = new Controller();
+
+                // Create a layout (can hold multiple planes and interfaces)
+                MainLayout = new Layout();
+
+                // Create a plane
+                //Plane UpperPlane3d = new Plane(GameObject.Find("UpperPlane"));
+                //Plane LowerPlane3d = new Plane(GameObject.Find("LowerPlane"));
+
+                // Create an interface
+                UpperInterface = new InterFace(UserCanvas.gameObject, "upper");
+                //LowerInterface = new InterFace(UserCanvas.gameObject, "lower");
+
+                // Create a mapping and add it to the interface
+                MainMapping = new Mapping();
+                MainMapping.ux_single_none += Methods.OrbitCamera;
+                MainMapping.ux_double_none += Methods.LateralCamera;
+                MainMapping.ux_double_none += Methods.LongitudinalCamera;
+                MainMapping.ux_single_2d += Methods.Drag2D;
+                MainMapping.ux_tap_2d += Methods.tapButton2D;
+
+                // Create an orbit cam with a pitch constraint.
+                Constraint orbitConstraint = new Constraint()
+                {
+                    pitchClamp = true,
+                    pitchClampMin = 15f,
+                    pitchClampMax = 85f
+
+                };
+
+                UiCam3D uppercam = new UiCam3D(GameObject.Find("MainCamera"));
+                uppercam.AddContraint(orbitConstraint);
+
+                //UiCam3D lowercam = new UiCam3D(GameObject.Find("CameraLower"));
+                //lowercam.AddContraint(orbitConstraint);
+
+                // Create an exit button and add it to the interface
+                //button = new Button("Exit");
+                //button.AddConstraint(Constraint.LockInPlace(button));
+                //button.AddCallback("startmenu");
+                //UpperInterface.addButton(button);
+
+                // Add together.
+
+                UpperInterface.AddUiCam3D(uppercam);
+                //LowerInterface.AddUiCam3D(lowercam);
+
+                UpperInterface.AddMapping(MainMapping);
+                //LowerInterface.AddMapping(MainMapping);
+
+                //UpperPlane3d.AddInterface(UpperInterface);
+                //LowerPlane3d.AddInterface(LowerInterface);
+
+                // Add to layout
+                MainLayout.AddInterface(UpperInterface);
+                //MainLayout.AddPlane(UpperPlane3d);
+                //MainLayout.AddPlane(LowerPlane3d);
+        }
+
+        void Kill()
+        {
+            foreach (Transform child in Root.transform)
+            {
+                Destroy(child.gameObject);
+            }
+        }
+
+        void Interface()
+        {
+            // Update the interface(s) and get result.
+            UserCallBack result = Controller.updateUi(MainLayout);
+            if (result.trigger)
+            {
+                Director.Instance.NewStoryLine(result.label);
+            }
         }
     }
 }

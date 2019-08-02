@@ -37,3 +37,16 @@ ExportedObj/
 
 #OSX
 .DS_Store
+Assets/PlayMaker/Editor/
+
+Assets/Gizmos/
+
+Assets/PlayMaker/
+
+Assets/Plugins/
+
+Assets/Gizmos\.meta
+
+Assets/PlayMaker\.meta
+
+Assets/Plugins\.meta
