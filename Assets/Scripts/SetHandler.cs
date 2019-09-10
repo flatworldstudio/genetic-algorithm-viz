@@ -3,6 +3,7 @@ using UnityEngine;
 using StoryEngine;
 using StoryEngine.UI;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 //using StoryEngine.UI;   
 
@@ -21,6 +22,7 @@ namespace Starfish
 
         public FamilyTreeDirector familyTreeDirector;
         public GameObject GenTitle,GenTitles;
+        public GameObject FamilyTree;
 
         public Canvas UserCanvas;
         Controller Controller;
@@ -148,8 +150,13 @@ namespace Starfish
                     break;
                 
                 case "reset":
+
                     if (Round > maxRounds)
                     {
+                        //foreach (Transform child in FamilyTree.transform)
+                        //{
+                        //    Destroy(child.gameObject);
+                        //}
                         // Start again
                         ZeeSterEvolutie = new ZeeSterEvolutie();
                         pop = ZeeSterEvolutie.GetPop();
@@ -162,6 +169,8 @@ namespace Starfish
                         Round = 1;
                     }
 
+                   
+
                     done = true;
                     break;
 
@@ -171,6 +180,7 @@ namespace Starfish
                     {
                         if (familyTreeDirector.finished)
                         {
+                            SceneManager.LoadScene("Starfish Battle04");
                             done = true;
                         }
                         else
@@ -297,6 +307,7 @@ namespace Starfish
                         Destroy(child.gameObject);
                     }
 
+                  
 
                     done = true;
                     break;
